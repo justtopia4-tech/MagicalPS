@@ -212,8 +212,8 @@ export default function App() {
         const parsedSaved = JSON.parse(saved);
         if (parsedSaved.bannerUrl === '/banner.mp4') delete parsedSaved.bannerUrl;
         if (parsedSaved.backgroundVideoUrl === '/banner.mp4') delete parsedSaved.backgroundVideoUrl;
-        if (!parsedSaved.audioUrl) parsedSaved.audioUrl = '/bgm.mp3';
-        return { ...siteConfig, ...parsedSaved };
+        const validAudio = (parsedSaved.audioUrl && parsedSaved.audioUrl.trim()) ? parsedSaved.audioUrl : '/bgm.mp3';
+        return { ...siteConfig, ...parsedSaved, audioUrl: validAudio };
       }
     } catch (e) {
       console.warn("Failed to load saved config from localStorage:", e);
@@ -229,7 +229,7 @@ export default function App() {
       const updated = {
         ...prev,
         ...newConfig,
-        audioUrl: (newConfig && newConfig.audioUrl) ? newConfig.audioUrl : (prev.audioUrl || siteConfig.audioUrl || '/bgm.mp3')
+        audioUrl: (newConfig && newConfig.audioUrl && newConfig.audioUrl.trim()) ? newConfig.audioUrl : (prev.audioUrl || siteConfig.audioUrl || '/bgm.mp3')
       };
       try {
         localStorage.setItem('magical_saved_config', JSON.stringify(updated));
@@ -242,7 +242,12 @@ export default function App() {
 
   const handleCloseWelcomeModal = () => {
     setIsWelcomeModalOpen(false);
-    if (audioRef.current && audioRef.current.paused) {
+    const srcUrl = (config.audioUrl && config.audioUrl.trim()) ? config.audioUrl : '/bgm.mp3';
+    if (!audioRef.current) {
+      audioRef.current = new Audio(srcUrl);
+      audioRef.current.loop = true;
+    }
+    if (audioRef.current.paused) {
       audioRef.current.volume = 0.5;
       audioRef.current.play()
         .then(() => setIsAudioPlaying(true))
@@ -299,7 +304,8 @@ export default function App() {
                   ...(parsed.AVATAR_URL ? { avatarUrl: parsed.AVATAR_URL } : {}),
                   ...(parsed.AUDIO_URL ? { audioUrl: parsed.AUDIO_URL } : {}),
                 };
-                return { ...prev, ...parsedValues, ...saved };
+                const resolvedAudio = (saved.audioUrl && saved.audioUrl.trim()) ? saved.audioUrl : (parsedValues.audioUrl || prev.audioUrl || siteConfig.audioUrl || '/bgm.mp3');
+                return { ...prev, ...parsedValues, ...saved, audioUrl: resolvedAudio };
               });
               return;
             }
@@ -345,7 +351,12 @@ export default function App() {
   // Initialize & Autoplay BGM Audio
   useEffect(() => {
     const playAttempt = () => {
-      if (audioRef.current && audioRef.current.paused) {
+      const srcUrl = (config.audioUrl && config.audioUrl.trim()) ? config.audioUrl : '/bgm.mp3';
+      if (!audioRef.current) {
+        audioRef.current = new Audio(srcUrl);
+        audioRef.current.loop = true;
+      }
+      if (audioRef.current.paused) {
         audioRef.current.volume = 0.5;
         audioRef.current.play()
           .then(() => {
@@ -375,7 +386,11 @@ export default function App() {
 
   // Audio BGM Manual Toggle
   const toggleAudio = () => {
-    if (!audioRef.current) return;
+    const srcUrl = (config.audioUrl && config.audioUrl.trim()) ? config.audioUrl : '/bgm.mp3';
+    if (!audioRef.current) {
+      audioRef.current = new Audio(srcUrl);
+      audioRef.current.loop = true;
+    }
     if (audioRef.current.paused) {
       audioRef.current.volume = 0.5;
       audioRef.current.play()
