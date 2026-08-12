@@ -164,6 +164,26 @@ function parseRolesText(text) {
   return roles.filter(r => r.name.length > 0);
 }
 
+// Single persistent BGM Audio instance outside React lifecycle
+let globalAudioInstance = null;
+
+function getBgmAudio(src = '/bgm.mp3') {
+  if (typeof window === 'undefined') return null;
+  const targetSrc = (src && src.trim()) ? src.trim() : '/bgm.mp3';
+  if (!globalAudioInstance) {
+    globalAudioInstance = new Audio(targetSrc);
+    globalAudioInstance.loop = true;
+  } else {
+    try {
+      const expectedHref = new URL(targetSrc, window.location.href).href;
+      if (globalAudioInstance.src !== expectedHref) {
+        globalAudioInstance.src = targetSrc;
+      }
+    } catch (_) {}
+  }
+  return globalAudioInstance;
+}
+
 export default function App() {
   const [activeTab, setActiveTab] = useState('guide');
   const [isCopyModalOpen, setIsCopyModalOpen] = useState(false);
@@ -222,8 +242,6 @@ export default function App() {
   });
   const [roles, setRoles] = useState(roleStoreData);
 
-  const audioRef = useRef(null);
-
   const handleUpdateConfig = (newConfig) => {
     setConfig(prev => {
       const updated = {
@@ -240,61 +258,19 @@ export default function App() {
     });
   };
 
-  // Failsafe Dual-System BGM Player
   const playBgm = () => {
-    const targetSrc = (config.audioUrl && config.audioUrl.trim()) ? config.audioUrl.trim() : '/bgm.mp3';
-
-    // 1. Try DOM <audio> element
-    if (audioRef.current) {
-      try {
-        const expectedHref = new URL(targetSrc, window.location.href).href;
-        if (audioRef.current.src !== expectedHref) {
-          audioRef.current.src = targetSrc;
-        }
-      } catch (_) {}
-
-      audioRef.current.volume = 0.5;
-      const playPromise = audioRef.current.play();
-      if (playPromise !== undefined) {
-        playPromise
-          .then(() => setIsAudioPlaying(true))
-          .catch((err) => {
-            console.warn("DOM audio play attempt notice:", err);
-            // 2. Programmatic Audio fallback
-            try {
-              if (!window._magicalBgm) {
-                window._magicalBgm = new Audio(targetSrc);
-                window._magicalBgm.loop = true;
-              }
-              window._magicalBgm.volume = 0.5;
-              window._magicalBgm.play()
-                .then(() => setIsAudioPlaying(true))
-                .catch(() => {});
-            } catch (_) {}
-          });
-        return;
-      }
-    }
-
-    // Programmatic fallback if DOM element not ready
-    try {
-      if (!window._magicalBgm) {
-        window._magicalBgm = new Audio(targetSrc);
-        window._magicalBgm.loop = true;
-      }
-      window._magicalBgm.volume = 0.5;
-      window._magicalBgm.play()
-        .then(() => setIsAudioPlaying(true))
-        .catch(() => {});
-    } catch (_) {}
+    const audio = getBgmAudio(config.audioUrl);
+    if (!audio) return;
+    audio.volume = 0.5;
+    audio.muted = false;
+    audio.play()
+      .then(() => setIsAudioPlaying(true))
+      .catch((e) => console.warn("BGM Play Notice:", e));
   };
 
   const pauseBgm = () => {
-    if (audioRef.current) {
-      try { audioRef.current.pause(); } catch (_) {}
-    }
-    if (window._magicalBgm) {
-      try { window._magicalBgm.pause(); } catch (_) {}
+    if (globalAudioInstance) {
+      globalAudioInstance.pause();
     }
     setIsAudioPlaying(false);
   };
@@ -399,23 +375,39 @@ export default function App() {
 
   // Initialize & Autoplay BGM Audio
   useEffect(() => {
-    playBgm();
+    const audio = getBgmAudio(config.audioUrl);
+    if (audio) {
+      const handlePlay = () => setIsAudioPlaying(true);
+      const handlePause = () => setIsAudioPlaying(false);
 
-    const handleUserInteraction = () => {
+      audio.addEventListener('play', handlePlay);
+      audio.addEventListener('playing', handlePlay);
+      audio.addEventListener('pause', handlePause);
+      audio.addEventListener('ended', handlePause);
+
+      // Attempt play on load & user interaction
       playBgm();
-    };
 
-    window.addEventListener('click', handleUserInteraction, { passive: true });
-    window.addEventListener('touchstart', handleUserInteraction, { passive: true });
-    window.addEventListener('keydown', handleUserInteraction, { passive: true });
-    window.addEventListener('pointerdown', handleUserInteraction, { passive: true });
+      const handleUserInteraction = () => {
+        playBgm();
+      };
 
-    return () => {
-      window.removeEventListener('click', handleUserInteraction);
-      window.removeEventListener('touchstart', handleUserInteraction);
-      window.removeEventListener('keydown', handleUserInteraction);
-      window.removeEventListener('pointerdown', handleUserInteraction);
-    };
+      window.addEventListener('click', handleUserInteraction, { passive: true });
+      window.addEventListener('touchstart', handleUserInteraction, { passive: true });
+      window.addEventListener('keydown', handleUserInteraction, { passive: true });
+      window.addEventListener('pointerdown', handleUserInteraction, { passive: true });
+
+      return () => {
+        audio.removeEventListener('play', handlePlay);
+        audio.removeEventListener('playing', handlePlay);
+        audio.removeEventListener('pause', handlePause);
+        audio.removeEventListener('ended', handlePause);
+        window.removeEventListener('click', handleUserInteraction);
+        window.removeEventListener('touchstart', handleUserInteraction);
+        window.removeEventListener('keydown', handleUserInteraction);
+        window.removeEventListener('pointerdown', handleUserInteraction);
+      };
+    }
   }, [config.audioUrl]);
 
   // Audio BGM Manual Toggle
@@ -570,19 +562,6 @@ export default function App() {
         isOpen={isWelcomeModalOpen}
         onClose={handleCloseWelcomeModal}
         config={config}
-      />
-
-      {/* Background BGM Audio Player */}
-      <audio
-        ref={audioRef}
-        src={config.audioUrl || '/bgm.mp3'}
-        loop
-        preload="auto"
-        playsInline
-        onPlay={() => setIsAudioPlaying(true)}
-        onPlaying={() => setIsAudioPlaying(true)}
-        onPause={() => setIsAudioPlaying(false)}
-        onEnded={() => setIsAudioPlaying(false)}
       />
     </div>
   );
