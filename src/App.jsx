@@ -167,19 +167,11 @@ function parseRolesText(text) {
 // Single persistent BGM Audio instance outside React lifecycle
 let globalAudioInstance = null;
 
-function getBgmAudio(src = '/bgm.mp3') {
+function getBgmAudio() {
   if (typeof window === 'undefined') return null;
-  const targetSrc = (src && src.trim()) ? src.trim() : '/bgm.mp3';
   if (!globalAudioInstance) {
-    globalAudioInstance = new Audio(targetSrc);
+    globalAudioInstance = new Audio('/bgm.mp3');
     globalAudioInstance.loop = true;
-  } else {
-    try {
-      const expectedHref = new URL(targetSrc, window.location.href).href;
-      if (globalAudioInstance.src !== expectedHref) {
-        globalAudioInstance.src = targetSrc;
-      }
-    } catch (_) {}
   }
   return globalAudioInstance;
 }
@@ -259,13 +251,14 @@ export default function App() {
   };
 
   const playBgm = () => {
-    const audio = getBgmAudio(config.audioUrl);
+    const audio = getBgmAudio();
     if (!audio) return;
-    audio.volume = 0.5;
-    audio.muted = false;
-    audio.play()
-      .then(() => setIsAudioPlaying(true))
-      .catch((e) => console.warn("BGM Play Notice:", e));
+    if (audio.paused) {
+      audio.volume = 0.5;
+      audio.play()
+        .then(() => setIsAudioPlaying(true))
+        .catch((e) => console.warn("BGM Play Notice:", e));
+    }
   };
 
   const pauseBgm = () => {
@@ -375,7 +368,7 @@ export default function App() {
 
   // Initialize & Autoplay BGM Audio
   useEffect(() => {
-    const audio = getBgmAudio(config.audioUrl);
+    const audio = getBgmAudio();
     if (audio) {
       const handlePlay = () => setIsAudioPlaying(true);
       const handlePause = () => setIsAudioPlaying(false);
@@ -385,7 +378,10 @@ export default function App() {
       audio.addEventListener('pause', handlePause);
       audio.addEventListener('ended', handlePause);
 
-      // Attempt play on load & user interaction
+      if (!audio.paused) {
+        setIsAudioPlaying(true);
+      }
+
       playBgm();
 
       const handleUserInteraction = () => {
@@ -408,14 +404,19 @@ export default function App() {
         window.removeEventListener('pointerdown', handleUserInteraction);
       };
     }
-  }, [config.audioUrl]);
+  }, []);
 
   // Audio BGM Manual Toggle
   const toggleAudio = () => {
-    if (isAudioPlaying) {
-      pauseBgm();
+    const audio = getBgmAudio();
+    if (!audio) return;
+    if (audio.paused) {
+      audio.volume = 0.5;
+      audio.play()
+        .then(() => setIsAudioPlaying(true))
+        .catch(err => console.warn("Toggle audio play notice:", err));
     } else {
-      playBgm();
+      pauseBgm();
     }
   };
 
