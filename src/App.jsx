@@ -240,14 +240,68 @@ export default function App() {
     });
   };
 
+  // Failsafe Dual-System BGM Player
+  const playBgm = () => {
+    const targetSrc = (config.audioUrl && config.audioUrl.trim()) ? config.audioUrl.trim() : '/bgm.mp3';
+
+    // 1. Try DOM <audio> element
+    if (audioRef.current) {
+      try {
+        const expectedHref = new URL(targetSrc, window.location.href).href;
+        if (audioRef.current.src !== expectedHref) {
+          audioRef.current.src = targetSrc;
+        }
+      } catch (_) {}
+
+      audioRef.current.volume = 0.5;
+      const playPromise = audioRef.current.play();
+      if (playPromise !== undefined) {
+        playPromise
+          .then(() => setIsAudioPlaying(true))
+          .catch((err) => {
+            console.warn("DOM audio play attempt notice:", err);
+            // 2. Programmatic Audio fallback
+            try {
+              if (!window._magicalBgm) {
+                window._magicalBgm = new Audio(targetSrc);
+                window._magicalBgm.loop = true;
+              }
+              window._magicalBgm.volume = 0.5;
+              window._magicalBgm.play()
+                .then(() => setIsAudioPlaying(true))
+                .catch(() => {});
+            } catch (_) {}
+          });
+        return;
+      }
+    }
+
+    // Programmatic fallback if DOM element not ready
+    try {
+      if (!window._magicalBgm) {
+        window._magicalBgm = new Audio(targetSrc);
+        window._magicalBgm.loop = true;
+      }
+      window._magicalBgm.volume = 0.5;
+      window._magicalBgm.play()
+        .then(() => setIsAudioPlaying(true))
+        .catch(() => {});
+    } catch (_) {}
+  };
+
+  const pauseBgm = () => {
+    if (audioRef.current) {
+      try { audioRef.current.pause(); } catch (_) {}
+    }
+    if (window._magicalBgm) {
+      try { window._magicalBgm.pause(); } catch (_) {}
+    }
+    setIsAudioPlaying(false);
+  };
+
   const handleCloseWelcomeModal = () => {
     setIsWelcomeModalOpen(false);
-    if (audioRef.current) {
-      audioRef.current.volume = 0.5;
-      audioRef.current.play()
-        .then(() => setIsAudioPlaying(true))
-        .catch(err => console.warn("Audio autoplay error on enter:", err));
-    }
+    playBgm();
   };
 
   // Load dynamic /config.txt on startup with cache busting & multi-endpoint fallback
@@ -345,20 +399,10 @@ export default function App() {
 
   // Initialize & Autoplay BGM Audio
   useEffect(() => {
-    const playAttempt = () => {
-      if (audioRef.current && audioRef.current.paused) {
-        audioRef.current.volume = 0.5;
-        const p = audioRef.current.play();
-        if (p !== undefined) {
-          p.then(() => setIsAudioPlaying(true)).catch(() => {});
-        }
-      }
-    };
-
-    playAttempt();
+    playBgm();
 
     const handleUserInteraction = () => {
-      playAttempt();
+      playBgm();
     };
 
     window.addEventListener('click', handleUserInteraction, { passive: true });
@@ -376,15 +420,10 @@ export default function App() {
 
   // Audio BGM Manual Toggle
   const toggleAudio = () => {
-    if (!audioRef.current) return;
-    if (audioRef.current.paused) {
-      audioRef.current.volume = 0.5;
-      audioRef.current.play()
-        .then(() => setIsAudioPlaying(true))
-        .catch(err => console.warn("Audio play notice:", err));
+    if (isAudioPlaying) {
+      pauseBgm();
     } else {
-      audioRef.current.pause();
-      setIsAudioPlaying(false);
+      playBgm();
     }
   };
 
