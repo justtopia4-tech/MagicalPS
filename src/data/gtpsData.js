@@ -13,8 +13,8 @@ export const siteConfig = {
   discordInvite: "https://discord.gg/hWu4yWy79x",
   hostIp: "100.30.125.206",
   hostDomain: "www.growtopia1.com",
-  vhostAndroidUrl: "/host",
-  vhostIosUrl: "/ios",
+  vhostAndroidUrl: "/host/100.30.125.206",
+  vhostIosUrl: "/ios/100.30.125.206",
   apkUrl: "https://www.mediafire.com/file/3t16viuv6konhwd/magical+5.48.apk/file",
   hostTxtContent: "100.30.125.206 www.growtopia1.com\n100.30.125.206 www.growtopia2.com\n# Magical ~ delivered by gtpshost.com"
 };

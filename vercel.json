@@ -2,8 +2,16 @@
   "cleanUrls": true,
   "rewrites": [
     {
+      "source": "/host/:ip*",
+      "destination": "/api/host?ip=:ip*"
+    },
+    {
       "source": "/host",
       "destination": "/api/host"
+    },
+    {
+      "source": "/ios/:ip*",
+      "destination": "/api/ios?ip=:ip*"
     },
     {
       "source": "/ios",

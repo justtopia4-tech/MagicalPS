@@ -57,6 +57,8 @@ export default function SettingsPage({ config, onUpdateConfig, onNavigateHome, t
     if (field === 'hostIp' && value.trim()) {
       const cleanIp = value.trim();
       const domain = formData.hostDomain || 'www.growtopia1.com';
+      updated.vhostAndroidUrl = `/host/${cleanIp}`;
+      updated.vhostIosUrl = `/ios/${cleanIp}`;
       updated.hostTxtContent = `${cleanIp} ${domain}\n${cleanIp} www.growtopia2.com\n# Magical ~ delivered by gtpshost.com`;
     }
     setFormData(updated);
