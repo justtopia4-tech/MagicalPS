@@ -237,11 +237,14 @@ export default function App() {
 
   const handleCloseWelcomeModal = () => {
     setIsWelcomeModalOpen(false);
-    if (audioRef.current && audioRef.current.paused) {
-      audioRef.current.play()
-        .then(() => setIsAudioPlaying(true))
-        .catch(err => console.warn("Audio autoplay error on enter:", err));
+    const bgmSrc = config.audioUrl || '/bgm.mp3';
+    if (!audioRef.current) {
+      audioRef.current = new Audio(bgmSrc);
+      audioRef.current.loop = true;
     }
+    audioRef.current.play()
+      .then(() => setIsAudioPlaying(true))
+      .catch(err => console.warn("Audio autoplay error on enter:", err));
   };
 
   // Load dynamic /config.txt on startup with cache busting & multi-endpoint fallback
@@ -338,12 +341,13 @@ export default function App() {
 
   // Initialize & Autoplay BGM Audio
   useEffect(() => {
-    if (!config.audioUrl) return;
-
-    const audio = new Audio(config.audioUrl);
-    audio.loop = true;
-    audio.autoplay = true;
-    audioRef.current = audio;
+    const bgmSrc = config.audioUrl || '/bgm.mp3';
+    if (!audioRef.current) {
+      audioRef.current = new Audio(bgmSrc);
+    } else if (audioRef.current.src !== new URL(bgmSrc, window.location.href).href) {
+      audioRef.current.src = bgmSrc;
+    }
+    audioRef.current.loop = true;
 
     const startAudio = () => {
       if (audioRef.current) {
@@ -378,15 +382,16 @@ export default function App() {
 
     return () => {
       removeListeners();
-      if (audioRef.current) {
-        audioRef.current.pause();
-      }
     };
   }, [config.audioUrl]);
 
   // Audio BGM Manual Toggle
   const toggleAudio = () => {
-    if (!audioRef.current) return;
+    const bgmSrc = config.audioUrl || '/bgm.mp3';
+    if (!audioRef.current) {
+      audioRef.current = new Audio(bgmSrc);
+      audioRef.current.loop = true;
+    }
     if (isAudioPlaying) {
       audioRef.current.pause();
       setIsAudioPlaying(false);
