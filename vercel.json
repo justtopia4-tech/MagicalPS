@@ -1,0 +1,25 @@
+{
+  "cleanUrls": true,
+  "rewrites": [
+    {
+      "source": "/host",
+      "destination": "/api/host"
+    },
+    {
+      "source": "/ios",
+      "destination": "/api/ios"
+    },
+    {
+      "source": "/nopy",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/nopy/(.*)",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}

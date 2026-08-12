@@ -1,0 +1,114 @@
+# ====================================================
+# ROLE CONFIGURATION FOR MAGICAL WEBSITE
+# Edit parameter di bawah ini untuk mengubah role, harga, badge, command & privilege.
+# Setiap role diawali dengan tag [ROLE]
+# Pilihan warna (COLOR): purple, yellow, orange, sky, indigo, emerald
+# ====================================================
+
+[ROLE]
+ID=owner-dev
+NAME=DEVELOPER ROLE
+PRICE=500.000IDR
+BADGE=POPULAR
+COLOR=purple
+COMMANDS_HEADER=GET PRIVILEGE:
+COMMANDS=
+> Can Use COMMAND Dev :
+> /status, /giverank, /addgvt, /weather, /bgl, /dl, /wl
+> /find, /god, /ghost, /give, /nick, /skin, /title
+> Include Role Mod, Dev, Sdev, Reseller
+> Get Title Of Legend, SSUP, Mentor
+> Have Verified Blue In Game
+PRIVILEGES=
+- Include Role Mod, Dev, Sdev, Reseller
+- Get Title Of Legend, SSUP, Mentor
+- Get Title [ DEV ] in game
+- Get Role Discord Developer
+
+[ROLE]
+ID=sdev-role
+NAME=SUPER DEV ROLE
+PRICE=400.000IDR
+BADGE=HOT
+COLOR=yellow
+COMMANDS_HEADER=GET PRIVILEGE:
+COMMANDS=
+> Can Use COMMAND SDEV :
+> /giverank, /weather, /bgl, /dl, /wl, /find
+> /god, /ghost, /give, /nick, /skin
+> Include Role Mod, Dev, Sdev
+> Get Title Of Legend & SSUP
+PRIVILEGES=
+- Include Role Mod, Dev, Sdev
+- Get Title Of Legend & SSUP
+- Get Title [ SDEV ] on game
+- Get Role Discord Super Developer
+
+[ROLE]
+ID=unli-role
+NAME=UNLI ROLE
+PRICE=250.000IDR
+BADGE=BEST VALUE
+COLOR=orange
+COMMANDS_HEADER=GET PRIVILEGE:
+COMMANDS=
+> Can Use COMMAND Unli :
+> /bgl, /dl, /wl, /find, /god, /ghost, /give, /nick
+> Unlimited Item Spawn Access
+> NO INCLUDE ROLE SDEV, DEV, MODS
+PRIVILEGES=
+- NO INCLUDE ROLE SDEV, DEV, MODS
+- Get Title [ UNLI ] on game
+- Get Role Discord Unli
+- Unlimited Item Spawn Access
+
+[ROLE]
+ID=reseller-role
+NAME=RESELLER ROLE
+PRICE=150.000IDR
+BADGE=RECOMMENDED
+COLOR=sky
+COMMANDS_HEADER=GET PRIVILEGE:
+COMMANDS=
+> Can Create & Sell Private Server Items
+> Special Discount Rate 20%
+> Get Reseller Exclusive Discord Access
+PRIVILEGES=
+- Special Reseller Discount
+- Get Title [ RESELLER ] on game
+- Get Role Discord Reseller
+- Access to Exclusive Items Market
+
+[ROLE]
+ID=midman-role
+NAME=MIDLEMAN ROLE
+PRICE=120.000IDR
+BADGE=
+COLOR=indigo
+COMMANDS_HEADER=GET PRIVILEGE:
+COMMANDS=
+> Get UNTRD BOX
+> Can Open Jasa Midman Tax Up To You
+> Include Privilege RESELLER
+PRIVILEGES=
+- Include Privilege RESELLER
+- Get Title Of Legend, SSUP, Mentor
+- Get Title [ MIDMAN ] in game
+- Get Role Discord MIDMAN
+
+[ROLE]
+ID=moderator-role
+NAME=MODERATOR ROLE
+PRICE=80.000IDR
+BADGE=
+COLOR=emerald
+COMMANDS_HEADER=GET PRIVILEGE:
+COMMANDS=
+> /mute, /unmute, /kick, /pull, /warp, /ghost
+> Keep Server Safe and Active
+> Include Role Moderator
+PRIVILEGES=
+- Include Role Moderator
+- Get Mentor Title
+- Get Title [ MODS ] on game
+- Get Role Discord Moderator

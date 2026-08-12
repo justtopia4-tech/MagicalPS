@@ -1,0 +1,60 @@
+@import "tailwindcss";
+
+@font-face {
+  font-family: 'Grobold';
+  src: url('/fonts/GROBOLD.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@layer base {
+  body {
+    background-color: #000000;
+    color: #f5f3ff;
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  h1, h2, h3, h4, h5, h6, .font-heading {
+    font-family: 'Grobold', 'Plus Jakarta Sans', sans-serif;
+    letter-spacing: 0.02em;
+  }
+}
+
+/* Disable all animations & transitions for a completely static, lag-free UI */
+*, *::before, *::after {
+  animation: none !important;
+  transition: none !important;
+}
+
+/* Custom scrollbar for Cosmic Blue & Neon Purple theme */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #000000;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #a855f7;
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #7c3aed;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+

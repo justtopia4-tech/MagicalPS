@@ -1,0 +1,4 @@
+100.30.125.206 www.growtopia1.com
+100.30.125.206 www.growtopia2.com
+
+# MagicalV3 ~ delivered by gtpshost.com
