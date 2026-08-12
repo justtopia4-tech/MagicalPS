@@ -242,12 +242,7 @@ export default function App() {
 
   const handleCloseWelcomeModal = () => {
     setIsWelcomeModalOpen(false);
-    const srcUrl = (config.audioUrl && config.audioUrl.trim()) ? config.audioUrl : '/bgm.mp3';
-    if (!audioRef.current) {
-      audioRef.current = new Audio(srcUrl);
-      audioRef.current.loop = true;
-    }
-    if (audioRef.current.paused) {
+    if (audioRef.current) {
       audioRef.current.volume = 0.5;
       audioRef.current.play()
         .then(() => setIsAudioPlaying(true))
@@ -351,22 +346,15 @@ export default function App() {
   // Initialize & Autoplay BGM Audio
   useEffect(() => {
     const playAttempt = () => {
-      const srcUrl = (config.audioUrl && config.audioUrl.trim()) ? config.audioUrl : '/bgm.mp3';
-      if (!audioRef.current) {
-        audioRef.current = new Audio(srcUrl);
-        audioRef.current.loop = true;
-      }
-      if (audioRef.current.paused) {
+      if (audioRef.current && audioRef.current.paused) {
         audioRef.current.volume = 0.5;
-        audioRef.current.play()
-          .then(() => {
-            setIsAudioPlaying(true);
-          })
-          .catch(() => {});
+        const p = audioRef.current.play();
+        if (p !== undefined) {
+          p.then(() => setIsAudioPlaying(true)).catch(() => {});
+        }
       }
     };
 
-    // Attempt immediate play on page load
     playAttempt();
 
     const handleUserInteraction = () => {
@@ -376,21 +364,19 @@ export default function App() {
     window.addEventListener('click', handleUserInteraction, { passive: true });
     window.addEventListener('touchstart', handleUserInteraction, { passive: true });
     window.addEventListener('keydown', handleUserInteraction, { passive: true });
+    window.addEventListener('pointerdown', handleUserInteraction, { passive: true });
 
     return () => {
       window.removeEventListener('click', handleUserInteraction);
       window.removeEventListener('touchstart', handleUserInteraction);
       window.removeEventListener('keydown', handleUserInteraction);
+      window.removeEventListener('pointerdown', handleUserInteraction);
     };
   }, [config.audioUrl]);
 
   // Audio BGM Manual Toggle
   const toggleAudio = () => {
-    const srcUrl = (config.audioUrl && config.audioUrl.trim()) ? config.audioUrl : '/bgm.mp3';
-    if (!audioRef.current) {
-      audioRef.current = new Audio(srcUrl);
-      audioRef.current.loop = true;
-    }
+    if (!audioRef.current) return;
     if (audioRef.current.paused) {
       audioRef.current.volume = 0.5;
       audioRef.current.play()
