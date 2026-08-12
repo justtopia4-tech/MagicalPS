@@ -350,30 +350,26 @@ export default function App() {
         audioRef.current.play()
           .then(() => {
             setIsAudioPlaying(true);
-            removeListeners();
           })
           .catch(() => {});
       }
     };
 
-    const removeListeners = () => {
-      window.removeEventListener('click', playAttempt);
-      window.removeEventListener('touchstart', playAttempt);
-      window.removeEventListener('keydown', playAttempt);
-      window.removeEventListener('scroll', playAttempt);
-      window.removeEventListener('pointermove', playAttempt);
-    };
-
+    // Attempt immediate play on page load
     playAttempt();
 
-    window.addEventListener('click', playAttempt, { passive: true });
-    window.addEventListener('touchstart', playAttempt, { passive: true });
-    window.addEventListener('keydown', playAttempt, { passive: true });
-    window.addEventListener('scroll', playAttempt, { passive: true });
-    window.addEventListener('pointermove', playAttempt, { passive: true });
+    const handleUserInteraction = () => {
+      playAttempt();
+    };
+
+    window.addEventListener('click', handleUserInteraction, { passive: true });
+    window.addEventListener('touchstart', handleUserInteraction, { passive: true });
+    window.addEventListener('keydown', handleUserInteraction, { passive: true });
 
     return () => {
-      removeListeners();
+      window.removeEventListener('click', handleUserInteraction);
+      window.removeEventListener('touchstart', handleUserInteraction);
+      window.removeEventListener('keydown', handleUserInteraction);
     };
   }, [config.audioUrl]);
 
@@ -544,7 +540,9 @@ export default function App() {
         preload="auto"
         playsInline
         onPlay={() => setIsAudioPlaying(true)}
+        onPlaying={() => setIsAudioPlaying(true)}
         onPause={() => setIsAudioPlaying(false)}
+        onEnded={() => setIsAudioPlaying(false)}
       />
     </div>
   );
