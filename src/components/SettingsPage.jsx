@@ -21,7 +21,10 @@ export default function SettingsPage({ config, onUpdateConfig, onNavigateHome, t
     whatsappGroupLink: '',
     discordInvite: '',
     profileHandle: '',
-    profileTitle: ''
+    profileTitle: '',
+    audioUrl: '/bgm.mp3',
+    bannerUrl: '/banner.png',
+    avatarUrl: '/logo.png'
   });
 
   useEffect(() => {
@@ -37,7 +40,10 @@ export default function SettingsPage({ config, onUpdateConfig, onNavigateHome, t
         whatsappGroupLink: config.whatsappGroupLink || '',
         discordInvite: config.discordInvite || '',
         profileHandle: config.profileHandle || '',
-        profileTitle: config.profileTitle || ''
+        profileTitle: config.profileTitle || '',
+        audioUrl: config.audioUrl || '/bgm.mp3',
+        bannerUrl: config.bannerUrl || '/banner.png',
+        avatarUrl: config.avatarUrl || '/logo.png'
       });
     }
   }, [config]);
@@ -116,9 +122,9 @@ COPYRIGHT_TEXT=${config.copyrightText || '© 2026 Copyright by Magical Private S
 GUIDE_TITLE=${config.guideTitle || 'Cara Bermain Magical PS'}
 
 # URL Gambar & Musik Latar (Opsional)
-BANNER_URL=${config.bannerUrl || '/banner.png'}
-AVATAR_URL=${config.avatarUrl || '/logo.png'}
-AUDIO_URL=${config.audioUrl || '/bgm.mp3'}
+BANNER_URL=${formData.bannerUrl || '/banner.png'}
+AVATAR_URL=${formData.avatarUrl || '/logo.png'}
+AUDIO_URL=${formData.audioUrl || '/bgm.mp3'}
 `;
   };
 
@@ -325,7 +331,18 @@ AUDIO_URL=${config.audioUrl || '/bgm.mp3'}
                     value={formData.discordInvite}
                     onChange={(e) => handleInputChange('discordInvite', e.target.value)}
                     placeholder="https://discord.gg/..."
-                    className="w-full px-3.5 py-2.5 rounded-xl bg-black/80 border-2 border-purple-500/50 text-white font-mono font-semibold focus:outline-none focus:border-purple-300 text-xs"
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-black/80 border-2 border-purple-500/50 text-indigo-300 font-mono font-semibold focus:outline-none focus:border-indigo-400 text-xs"
+                  />
+                </div>
+
+                <div className="sm:col-span-2">
+                  <label className="block font-black text-amber-300 mb-1.5">URL MUSIK LATAR BGM (.MP3):</label>
+                  <input
+                    type="text"
+                    value={formData.audioUrl || '/bgm.mp3'}
+                    onChange={(e) => handleInputChange('audioUrl', e.target.value)}
+                    placeholder="/bgm.mp3"
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-black/80 border-2 border-amber-400/60 text-amber-300 font-mono font-semibold focus:outline-none focus:border-amber-300 text-xs"
                   />
                 </div>
 

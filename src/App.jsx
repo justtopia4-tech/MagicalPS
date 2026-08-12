@@ -226,7 +226,11 @@ export default function App() {
 
   const handleUpdateConfig = (newConfig) => {
     setConfig(prev => {
-      const updated = { ...prev, ...newConfig };
+      const updated = {
+        ...prev,
+        ...newConfig,
+        audioUrl: (newConfig && newConfig.audioUrl) ? newConfig.audioUrl : (prev.audioUrl || siteConfig.audioUrl || '/bgm.mp3')
+      };
       try {
         localStorage.setItem('magical_saved_config', JSON.stringify(updated));
       } catch (e) {
