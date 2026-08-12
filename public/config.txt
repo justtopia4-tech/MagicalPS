@@ -8,8 +8,8 @@ HOST_IP=100.30.125.206
 HOST_DOMAIN=www.growtopia1.com
 
 # Link HOST Android (PowerTunnel), iOS (Surge 5) & APK GTPS
-VHOST_ANDROID_URL=/host/100.30.125.206
-VHOST_IOS_URL=/ios/100.30.125.206
+VHOST_ANDROID_URL=https://magicalps.vercel.app/host/100.30.125.206
+VHOST_IOS_URL=https://magicalps.vercel.app/ios/100.30.125.206
 APK_URL=https://www.mediafire.com/file/3t16viuv6konhwd/magical+5.48.apk/file
 HOST_TXT_CONTENT=100.30.125.206 www.growtopia1.com\n100.30.125.206 www.growtopia2.com\n# Magical ~ delivered by gtpshost.com
 

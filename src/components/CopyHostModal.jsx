@@ -1,11 +1,21 @@
 import React from 'react';
-import { X, Copy, ExternalLink, ShieldCheck, Download } from 'lucide-react';
+import { X, Copy, ShieldCheck, Download } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export default function CopyHostModal({ isOpen, onClose, config, onCopyText, onDownloadTxt, onDownloadApk, copyToast }) {
   if (!isOpen) return null;
 
   const hostsContent = `${config.hostIp} ${config.hostDomain}\n${config.hostIp} www.growtopia2.com`;
+
+  const getAbsUrl = (url) => {
+    if (!url) return '';
+    if (url.startsWith('http://') || url.startsWith('https://')) return url;
+    const origin = (typeof window !== 'undefined' && window.location.origin && window.location.origin !== 'null') ? window.location.origin : 'https://magicalps.vercel.app';
+    return `${origin}${url.startsWith('/') ? '' : '/'}${url}`;
+  };
+
+  const androidUrl = getAbsUrl(config.vhostAndroidUrl);
+  const iosUrl = getAbsUrl(config.vhostIosUrl);
 
   const handleDownloadHostTxt = () => {
     if (onDownloadTxt) {
@@ -98,42 +108,31 @@ export default function CopyHostModal({ isOpen, onClose, config, onCopyText, onD
           </div>
 
           <div className="space-y-4">
-            {/* Windows / macOS IP Host Box */}
             <div className="p-3.5 rounded-2xl bg-black/60 border border-white/50">
               <div className="flex items-center justify-between gap-2 mb-2">
                 <span className="text-xs font-black text-purple-300 font-heading">
                   WINDOWS / MACOS HOST
                 </span>
-                <div className="flex items-center gap-1.5">
-                  <button
-                    onClick={handleDownloadHostTxt}
-                    className="py-1 px-2.5 bg-amber-500 hover:bg-amber-400 text-stone-950 font-black text-[11px] rounded-lg flex items-center gap-1 transition-colors cursor-pointer border border-white/70"
-                  >
-                    <Download className="w-3 h-3 text-stone-950" />
-                    <span>.txt</span>
-                  </button>
-                  <button
-                    onClick={() => onCopyText(hostsContent, "Host entries copied!")}
-                    className="py-1 px-2.5 bg-purple-600 hover:bg-purple-500 text-white font-black text-[11px] rounded-lg flex items-center gap-1 transition-colors cursor-pointer border border-white/70"
-                  >
-                    <Copy className="w-3 h-3" />
-                    <span>Copy Hosts</span>
-                  </button>
-                </div>
+                <button
+                  onClick={() => onCopyText(hostsContent, "Host entries copied!")}
+                  className="py-1 px-2.5 bg-purple-600 hover:bg-purple-500 text-white font-black text-[11px] rounded-lg flex items-center gap-1 transition-colors cursor-pointer border border-white/70"
+                >
+                  <Copy className="w-3 h-3" />
+                  <span>Copy Hosts</span>
+                </button>
               </div>
               <pre className="p-2.5 rounded-xl bg-black/80 text-purple-200 font-mono text-[11px] leading-relaxed border border-white/30 overflow-x-auto">
                 {hostsContent}
               </pre>
             </div>
 
-            {/* Android PowerTunnel HOST Box */}
             <div className="p-3.5 rounded-2xl bg-black/60 border border-white/50">
               <div className="flex items-center justify-between gap-2 mb-1.5">
                 <span className="text-xs font-black text-purple-300 font-heading">
                   ANDROID HOST (POWERTUNNEL)
                 </span>
                 <button
-                  onClick={() => onCopyText(config.vhostAndroidUrl, "Android HOST URL copied!")}
+                  onClick={() => onCopyText(androidUrl, "Android HOST URL copied!")}
                   className="py-1 px-2.5 bg-purple-600 hover:bg-purple-500 text-white font-black text-[11px] rounded-lg flex items-center gap-1 transition-colors cursor-pointer border border-white/70"
                 >
                   <Copy className="w-3 h-3" />
@@ -141,18 +140,17 @@ export default function CopyHostModal({ isOpen, onClose, config, onCopyText, onD
                 </button>
               </div>
               <div className="p-2 rounded-xl bg-black/80 text-purple-200 font-mono text-[11px] truncate border border-white/30">
-                {config.vhostAndroidUrl}
+                {androidUrl}
               </div>
             </div>
 
-            {/* iOS Surge 5 HOST Box */}
             <div className="p-3.5 rounded-2xl bg-black/60 border border-white/50">
               <div className="flex items-center justify-between gap-2 mb-1.5">
                 <span className="text-xs font-black text-purple-300 font-heading">
                   IOS HOST (SURGE 5)
                 </span>
                 <button
-                  onClick={() => onCopyText(config.vhostIosUrl, "iOS HOST URL copied!")}
+                  onClick={() => onCopyText(iosUrl, "iOS HOST URL copied!")}
                   className="py-1 px-2.5 bg-purple-600 hover:bg-purple-500 text-white font-black text-[11px] rounded-lg flex items-center gap-1 transition-colors cursor-pointer border border-white/70"
                 >
                   <Copy className="w-3 h-3" />
@@ -160,7 +158,7 @@ export default function CopyHostModal({ isOpen, onClose, config, onCopyText, onD
                 </button>
               </div>
               <div className="p-2 rounded-xl bg-black/80 text-purple-200 font-mono text-[11px] truncate border border-white/30">
-                {config.vhostIosUrl}
+                {iosUrl}
               </div>
             </div>
           </div>

@@ -63,8 +63,11 @@ export default function SettingsPage({ config, onUpdateConfig, onNavigateHome, t
     if (field === 'hostIp' && value.trim()) {
       const cleanIp = value.trim();
       const domain = formData.hostDomain || 'www.growtopia1.com';
-      updated.vhostAndroidUrl = `/host/${cleanIp}`;
-      updated.vhostIosUrl = `/ios/${cleanIp}`;
+      const baseUrl = (typeof window !== 'undefined' && window.location.origin && window.location.origin !== 'null') 
+        ? window.location.origin 
+        : 'https://magicalps.vercel.app';
+      updated.vhostAndroidUrl = `${baseUrl}/host/${cleanIp}`;
+      updated.vhostIosUrl = `${baseUrl}/ios/${cleanIp}`;
       updated.hostTxtContent = `${cleanIp} ${domain}\n${cleanIp} www.growtopia2.com\n# Magical ~ delivered by gtpshost.com`;
     }
     setFormData(updated);

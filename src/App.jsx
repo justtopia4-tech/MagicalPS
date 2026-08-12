@@ -407,13 +407,20 @@ export default function App() {
 
   // Connection Guide Action Handler
   const handleExecuteGuideAction = (actionType) => {
+    const getAbsUrl = (url) => {
+      if (!url) return '';
+      if (url.startsWith('http://') || url.startsWith('https://')) return url;
+      const origin = (typeof window !== 'undefined' && window.location.origin && window.location.origin !== 'null') ? window.location.origin : 'https://magicalps.vercel.app';
+      return `${origin}${url.startsWith('/') ? '' : '/'}${url}`;
+    };
+
     if (actionType === 'copyHosts') {
       const hosts = `${config.hostIp} ${config.hostDomain}\n${config.hostIp} www.growtopia2.com`;
       handleCopyText(hosts, "Host entries copied!");
     } else if (actionType === 'copyVhostAndroid') {
-      handleCopyText(config.vhostAndroidUrl, "Android HOST URL copied!");
+      handleCopyText(getAbsUrl(config.vhostAndroidUrl), "Android HOST URL copied!");
     } else if (actionType === 'copyVhostIos') {
-      handleCopyText(config.vhostIosUrl, "iOS HOST URL copied!");
+      handleCopyText(getAbsUrl(config.vhostIosUrl), "iOS HOST URL copied!");
     } else if (actionType === 'downloadApk') {
       const apkLink = config.apkUrl || "https://www.mediafire.com/file/3t16viuv6konhwd/magical+5.48.apk/file";
       window.open(apkLink, "_blank");
