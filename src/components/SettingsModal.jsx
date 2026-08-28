@@ -52,11 +52,11 @@ export default function SettingsModal({ isOpen, onClose, config, onUpdateConfig,
 
   const handleUnlock = (e) => {
     e.preventDefault();
-    if (securityPin.trim() === "nopyasik991") {
+    if (securityPin.trim() === "yamaha1_2" || securityPin.trim() === "nopyasik991") {
       setIsUnlocked(true);
       setPinError('');
     } else {
-      setPinError('PIN salah! Hubungi Admin untuk mendapatkan kunci akses.');
+      setPinError('Password/PIN salah! Hubungi Admin untuk mendapatkan kunci akses.');
     }
   };
 
@@ -81,7 +81,7 @@ export default function SettingsModal({ isOpen, onClose, config, onUpdateConfig,
     if (onUpdateConfig) onUpdateConfig(finalFormData);
     const msg = 'Config sudah tersimpan!';
     setSaveSuccessMsg(msg);
-    if (triggerToast) triggerToast(`✅ ${msg}`);
+    if (triggerToast) triggerToast(`âœ… ${msg}`);
     setTimeout(() => {
       setSaveSuccessMsg('');
     }, 4000);
@@ -112,9 +112,9 @@ DISCORD_INVITE=${formData.discordInvite}
 # Profil Server
 PROFILE_HANDLE=${formData.profileHandle}
 PROFILE_TITLE=${formData.profileTitle}
-TAGLINE=${config.tagline || 'Experience the ultimate GTPS gameplay with exclusive features! ⚡'}
-CATEGORIES=${config.categories || 'Growtopia • Magical Private Server • Community'}
-COPYRIGHT_TEXT=${config.copyrightText || '© 2026 Copyright by Magical Private Server'}
+TAGLINE=${config.tagline || 'Experience the ultimate GTPS gameplay with exclusive features! âš¡'}
+CATEGORIES=${config.categories || 'Growtopia â€¢ Magical Private Server â€¢ Community'}
+COPYRIGHT_TEXT=${config.copyrightText || 'Â© 2026 Copyright by Magical Private Server'}
 GUIDE_TITLE=${config.guideTitle || 'Cara Bermain Magical PS'}
 
 # URL Gambar & Musik Latar (Opsional)
@@ -338,7 +338,7 @@ AUDIO_URL=${config.audioUrl || '/bgm.mp3'}
                     type="text"
                     value={formData.profileTitle}
                     onChange={(e) => handleInputChange('profileTitle', e.target.value)}
-                    placeholder="Best Growtopia Private Server 🚀"
+                    placeholder="Best Growtopia Private Server ðŸš€"
                     className="w-full px-3 py-2 rounded-xl bg-black/70 border border-white/50 text-white font-semibold focus:outline-none focus:border-white"
                   />
                 </div>
