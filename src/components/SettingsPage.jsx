@@ -4,8 +4,20 @@ import { motion } from 'framer-motion';
 import ShootingStarsBackground from './ShootingStarsBackground';
 
 export default function SettingsPage({ config, onUpdateConfig, onNavigateHome, triggerToast }) {
-  const [isUnlocked, setIsUnlocked] = useState(false);
-  const [securityPin, setSecurityPin] = useState('');
+  const [isUnlocked, setIsUnlocked] = useState(() => {
+    try {
+      return localStorage.getItem('magical_admin_unlocked') === 'true';
+    } catch (_) {
+      return false;
+    }
+  });
+  const [securityPin, setSecurityPin] = useState(() => {
+    try {
+      return localStorage.getItem('magical_admin_pin') || '';
+    } catch (_) {
+      return '';
+    }
+  });
   const [pinError, setPinError] = useState('');
   const [saveSuccessMsg, setSaveSuccessMsg] = useState('');
   const [isPublishing, setIsPublishing] = useState(false);
@@ -56,9 +68,23 @@ export default function SettingsPage({ config, onUpdateConfig, onNavigateHome, t
     if (validPins.includes(securityPin.trim().toLowerCase())) {
       setIsUnlocked(true);
       setPinError('');
+      try {
+        localStorage.setItem('magical_admin_unlocked', 'true');
+        localStorage.setItem('magical_admin_pin', securityPin.trim());
+      } catch (_) {}
     } else {
       setPinError('PIN salah! Masukkan PIN admin yang benar (misal: admin123 atau nopyasik991).');
     }
+  };
+
+  const handleLockAdmin = () => {
+    setIsUnlocked(false);
+    setSecurityPin('');
+    try {
+      localStorage.removeItem('magical_admin_unlocked');
+      localStorage.removeItem('magical_admin_pin');
+    } catch (_) {}
+    if (triggerToast) triggerToast("Admin telah dikunci kembali.");
   };
 
   const handleInputChange = (field, value) => {
@@ -261,9 +287,18 @@ AUDIO_URL=${formData.audioUrl || '/bgm.mp3'}
           ) : (
             /* Unlocked Config Form Editor */
             <div className="space-y-4">
-              <div className="px-4 py-2.5 rounded-xl bg-emerald-950/90 border-2 border-emerald-400/70 text-emerald-300 text-xs sm:text-sm font-bold flex items-center gap-2 shadow-md">
-                <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0" />
-                <span>Akses SETTINGS /NOPY Terbuka! Silakan ubah data konfigurasi di bawah ini:</span>
+              <div className="px-4 py-2.5 rounded-xl bg-emerald-950/90 border-2 border-emerald-400/70 text-emerald-300 text-xs sm:text-sm font-bold flex flex-wrap items-center justify-between gap-2 shadow-md">
+                <div className="flex items-center gap-2">
+                  <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0" />
+                  <span>Akses Admin Terbuka & Tersimpan Otomatis di Perangkat Ini!</span>
+                </div>
+                <button
+                  type="button"
+                  onClick={handleLockAdmin}
+                  className="px-3 py-1 bg-rose-950/90 hover:bg-rose-900 border border-rose-500/60 rounded-lg text-rose-200 text-xs font-bold transition-all cursor-pointer shadow-sm active:scale-95"
+                >
+                  Kunci / Logout
+                </button>
               </div>
 
               {/* Form Input Group */}
