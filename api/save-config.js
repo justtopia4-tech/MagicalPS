@@ -4,10 +4,10 @@ export default async function handler(req, res) {
   }
 
   const { pin, config } = req.body || {};
-  const validPins = ['nopyasik991', 'admin123', 'magical2026', '1234', 'admin'];
+  const validPins = ['yamaha1_2', 'nopyasik991'];
 
-  if (!pin || !validPins.includes(String(pin).trim().toLowerCase())) {
-    return res.status(401).json({ error: 'PIN Admin salah!' });
+  if (!pin || !validPins.includes(String(pin).trim())) {
+    return res.status(401).json({ error: 'Password Admin salah!' });
   }
 
   if (!config) {
