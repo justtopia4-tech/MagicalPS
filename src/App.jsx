@@ -185,20 +185,20 @@ export default function App() {
   const [copyToast, setCopyToast] = useState('');
   const [isAudioPlaying, setIsAudioPlaying] = useState(false);
 
-  const isNopyRoute = () => {
+  const isSettingsRoute = () => {
     const path = window.location.pathname.toLowerCase();
     const hash = window.location.hash.toLowerCase();
     const search = window.location.search.toLowerCase();
-    return path.includes('nopy') || hash.includes('nopy') || search.includes('nopy');
+    return path.includes('admin') || path.includes('nopy') || hash.includes('admin') || hash.includes('nopy') || search.includes('admin') || search.includes('nopy');
   };
 
   const [currentPath, setCurrentPath] = useState(() => {
-    return isNopyRoute() ? '/nopy' : '/';
+    return isSettingsRoute() ? '/admin' : '/';
   });
 
   useEffect(() => {
     const handleRouteChange = () => {
-      setCurrentPath(isNopyRoute() ? '/nopy' : '/');
+      setCurrentPath(isSettingsRoute() ? '/admin' : '/');
     };
 
     window.addEventListener('popstate', handleRouteChange);
@@ -213,7 +213,7 @@ export default function App() {
     try {
       window.history.pushState(null, '', path);
     } catch (_) {
-      window.location.hash = path === '/nopy' ? 'nopy' : '';
+      window.location.hash = (path === '/admin' || path === '/nopy') ? 'admin' : '';
     }
     setCurrentPath(path);
   };
@@ -277,6 +277,7 @@ export default function App() {
   useEffect(() => {
     const loadConfig = async () => {
       const endpoints = [
+        '/api/config?t=' + Date.now(),
         '/config.txt?t=' + Date.now(),
         `http://${siteConfig.hostIp}/config.txt?t=` + Date.now(),
         'http://127.0.0.1/config.txt?t=' + Date.now(),
@@ -468,7 +469,7 @@ export default function App() {
     }
   };
 
-  if (currentPath === '/nopy') {
+  if (currentPath === '/admin' || currentPath === '/nopy') {
     return (
       <SettingsPage
         config={config}
