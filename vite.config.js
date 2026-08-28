@@ -26,21 +26,24 @@ export default defineConfig({
       }
     },
     {
-      name: 'copy-nopy-html',
+      name: 'copy-admin-and-nopy-html',
       closeBundle() {
         try {
           const distDir = path.resolve(__dirname, 'dist');
-          const nopyDir = path.resolve(distDir, 'nopy');
           const indexPath = path.resolve(distDir, 'index.html');
           if (fs.existsSync(indexPath)) {
-            if (!fs.existsSync(nopyDir)) {
-              fs.mkdirSync(nopyDir, { recursive: true });
+            const routes = ['nopy', 'admin'];
+            for (const route of routes) {
+              const routeDir = path.resolve(distDir, route);
+              if (!fs.existsSync(routeDir)) {
+                fs.mkdirSync(routeDir, { recursive: true });
+              }
+              fs.copyFileSync(indexPath, path.resolve(routeDir, 'index.html'));
+              fs.copyFileSync(indexPath, path.resolve(distDir, `${route}.html`));
             }
-            fs.copyFileSync(indexPath, path.resolve(nopyDir, 'index.html'));
-            fs.copyFileSync(indexPath, path.resolve(distDir, 'nopy.html'));
           }
         } catch (e) {
-          console.warn("Failed to copy nopy HTML fallback:", e);
+          console.warn("Failed to copy admin/nopy HTML fallback:", e);
         }
       }
     }
