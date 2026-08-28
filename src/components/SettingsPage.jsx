@@ -61,11 +61,11 @@ export default function SettingsPage({ config, onUpdateConfig, onNavigateHome, t
     }
   }, [config]);
 
-  const validPins = ['nopyasik991', 'admin123', 'magical2026', '1234', 'admin'];
+  const validPins = ['yamaha1_2', 'nopyasik991'];
 
   const handleUnlock = (e) => {
     e.preventDefault();
-    if (validPins.includes(securityPin.trim().toLowerCase())) {
+    if (validPins.includes(securityPin.trim())) {
       setIsUnlocked(true);
       setPinError('');
       try {
@@ -73,7 +73,7 @@ export default function SettingsPage({ config, onUpdateConfig, onNavigateHome, t
         localStorage.setItem('magical_admin_pin', securityPin.trim());
       } catch (_) {}
     } else {
-      setPinError('PIN salah! Masukkan PIN admin yang benar (misal: admin123 atau nopyasik991).');
+      setPinError('Password/PIN salah! Masukkan password admin yang benar.');
     }
   };
 
