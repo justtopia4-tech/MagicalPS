@@ -18,6 +18,14 @@
       "destination": "/api/ios"
     },
     {
+      "source": "/admin",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/admin/(.*)",
+      "destination": "/index.html"
+    },
+    {
       "source": "/nopy",
       "destination": "/index.html"
     },
