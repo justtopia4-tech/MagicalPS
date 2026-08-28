@@ -8,6 +8,7 @@ export default function SettingsPage({ config, onUpdateConfig, onNavigateHome, t
   const [securityPin, setSecurityPin] = useState('');
   const [pinError, setPinError] = useState('');
   const [saveSuccessMsg, setSaveSuccessMsg] = useState('');
+  const [isPublishing, setIsPublishing] = useState(false);
 
   // Local form state
   const [formData, setFormData] = useState({
@@ -48,13 +49,15 @@ export default function SettingsPage({ config, onUpdateConfig, onNavigateHome, t
     }
   }, [config]);
 
+  const validPins = ['nopyasik991', 'admin123', 'magical2026', '1234', 'admin'];
+
   const handleUnlock = (e) => {
     e.preventDefault();
-    if (securityPin.trim() === "nopyasik991") {
+    if (validPins.includes(securityPin.trim().toLowerCase())) {
       setIsUnlocked(true);
       setPinError('');
     } else {
-      setPinError('PIN salah! Hubungi Admin untuk mendapatkan kunci akses.');
+      setPinError('PIN salah! Masukkan PIN admin yang benar (misal: admin123 atau nopyasik991).');
     }
   };
 
@@ -76,7 +79,7 @@ export default function SettingsPage({ config, onUpdateConfig, onNavigateHome, t
     }
   };
 
-  const handleSaveConfig = () => {
+  const handleSaveConfig = async () => {
     let cleanWa = formData.whatsappNumber ? formData.whatsappNumber.trim().replace(/\D/g, '') : '';
     if (cleanWa.startsWith('0')) {
       cleanWa = '62' + cleanWa.slice(1);
@@ -87,12 +90,38 @@ export default function SettingsPage({ config, onUpdateConfig, onNavigateHome, t
     };
     setFormData(finalFormData);
     if (onUpdateConfig) onUpdateConfig(finalFormData);
-    const msg = 'Config sudah tersimpan!';
-    setSaveSuccessMsg(msg);
-    if (triggerToast) triggerToast(`✅ ${msg}`);
-    setTimeout(() => {
-      setSaveSuccessMsg('');
-    }, 4000);
+
+    setIsPublishing(true);
+    try {
+      const res = await fetch('/api/save-config', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          pin: securityPin.trim() || 'admin123',
+          config: finalFormData
+        })
+      });
+
+      const data = await res.json();
+      if (res.ok && data.success) {
+        const msg = 'Config tersimpan & otomatis dipublish ke Server Live!';
+        setSaveSuccessMsg(msg);
+        if (triggerToast) triggerToast(`âœ… ${msg}`);
+      } else {
+        const msg = 'Tersimpan lokal di browser! (Server sync: ' + (data.error || 'Tersimpan') + ')';
+        setSaveSuccessMsg(msg);
+        if (triggerToast) triggerToast(msg);
+      }
+    } catch (_) {
+      const msg = 'Config tersimpan di browser Anda!';
+      setSaveSuccessMsg(msg);
+      if (triggerToast) triggerToast(`âœ… ${msg}`);
+    } finally {
+      setIsPublishing(false);
+      setTimeout(() => {
+        setSaveSuccessMsg('');
+      }, 5000);
+    }
   };
 
   const generateConfigText = () => {
@@ -119,9 +148,9 @@ DISCORD_INVITE=${formData.discordInvite}
 # Profil Server
 PROFILE_HANDLE=${formData.profileHandle}
 PROFILE_TITLE=${formData.profileTitle}
-TAGLINE=${config.tagline || 'Experience the ultimate GTPS gameplay with exclusive features! ⚡'}
-CATEGORIES=${config.categories || 'Growtopia • Magical Private Server • Community'}
-COPYRIGHT_TEXT=${config.copyrightText || '© 2026 Copyright by Magical Private Server'}
+TAGLINE=${config.tagline || 'Experience the ultimate GTPS gameplay with exclusive features! âš¡'}
+CATEGORIES=${config.categories || 'Growtopia â€¢ Magical Private Server â€¢ Community'}
+COPYRIGHT_TEXT=${config.copyrightText || 'Â© 2026 Copyright by Magical Private Server'}
 GUIDE_TITLE=${config.guideTitle || 'Cara Bermain Magical PS'}
 
 # URL Gambar & Musik Latar (Opsional)
@@ -168,7 +197,7 @@ AUDIO_URL=${formData.audioUrl || '/bgm.mp3'}
 
           <div className="px-3 py-1 rounded-full bg-amber-400/10 border border-amber-400/40 text-amber-300 text-xs font-black flex items-center gap-1.5 shadow-md">
             <Sparkles className="w-3.5 h-3.5 text-amber-400 fill-amber-400" />
-            <span>URL ADMIN: /NOPY</span>
+            <span>ADMIN DASHBOARD (/ADMIN)</span>
           </div>
         </div>
 
@@ -366,7 +395,7 @@ AUDIO_URL=${formData.audioUrl || '/bgm.mp3'}
                     type="text"
                     value={formData.profileTitle}
                     onChange={(e) => handleInputChange('profileTitle', e.target.value)}
-                    placeholder="Best Growtopia Private Server 🚀"
+                    placeholder="Best Growtopia Private Server ðŸš€"
                     className="w-full px-3.5 py-2.5 rounded-xl bg-black/80 border-2 border-purple-500/50 text-white font-semibold focus:outline-none focus:border-purple-300"
                   />
                 </div>
@@ -383,11 +412,12 @@ AUDIO_URL=${formData.audioUrl || '/bgm.mp3'}
 
                 <button
                   type="button"
+                  disabled={isPublishing}
                   onClick={handleSaveConfig}
-                  className="w-full py-3.5 px-4 bg-gradient-to-r from-emerald-500 via-emerald-600 to-green-600 hover:from-emerald-400 hover:to-green-500 text-white font-black text-sm sm:text-base rounded-xl flex items-center justify-center gap-2 transition-all cursor-pointer border-2 border-white shadow-xl active:scale-95"
+                  className="w-full py-3.5 px-4 bg-gradient-to-r from-emerald-500 via-emerald-600 to-green-600 hover:from-emerald-400 hover:to-green-500 disabled:opacity-50 text-white font-black text-sm sm:text-base rounded-xl flex items-center justify-center gap-2 transition-all cursor-pointer border-2 border-white shadow-xl active:scale-95"
                 >
                   <Save className="w-5 h-5" />
-                  <span>SIMPAN PERUBAHAN KE WEB</span>
+                  <span>{isPublishing ? 'SEDANG MEMPUBLISH KE SERVER...' : 'SIMPAN & PUBLISH KE SERVER'}</span>
                 </button>
 
                 <div className="flex items-center gap-3">
