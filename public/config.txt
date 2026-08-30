@@ -11,7 +11,7 @@ HOST_DOMAIN=www.growtopia1.com
 VHOST_ANDROID_URL=https://magicalps.vercel.app/host/54.90.55.131
 VHOST_IOS_URL=https://magicalps.vercel.app/ios/54.90.55.131
 APK_URL=https://www.mediafire.com/file/3t16viuv6konhwd/magical+5.48.apk/file
-HOST_TXT_CONTENT=54.90.55.131 www.growtopia1.com\n54.90.55.131 www.growtopia2.com\n# Magical ~ delivered by gtpshost.com
+HOST_TXT_CONTENT=54.90.55.131 www.growtopia1.com\n54.90.55.131 www.growtopia2.com\n# Magical ~ delivered by nopy
 
 # Kontak & Komunitas
 WHATSAPP_NUMBER=
@@ -22,8 +22,8 @@ DISCORD_INVITE=https://discord.gg/hWu4yWy79x
 PROFILE_HANDLE=Magical Private Server
 PROFILE_TITLE=Best Growtopia Private Server ??
 TAGLINE=?? Mulai Petualangan Baru Kamu di Magical GTPS! Nikmati Sensasi Main Growtopia Tanpa Batas, Fitur Role Keren, Komunitas Ramah & Admin Fast Response 24 Jam. Ayo Ajak Teman-Temanmu Dan Join Sekarang!
-CATEGORIES=Growtopia � Magical Private Server � Community
-COPYRIGHT_TEXT=� 2026 Copyright by Magical Private Server
+CATEGORIES=Growtopia • Magical Private Server • Community
+COPYRIGHT_TEXT=© 2026 Copyright by Magical Private Server
 GUIDE_TITLE=Cara Bermain Magical PS
 
 # URL Gambar & Musik Latar (Opsional)
