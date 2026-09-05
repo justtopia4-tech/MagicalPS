@@ -4,14 +4,14 @@
 # ====================================================
 
 # IP Server & Domain Host
-HOST_IP=54.90.55.131
+HOST_IP=168.144.136.157
 HOST_DOMAIN=www.growtopia1.com
 
 # Link HOST Android (PowerTunnel), iOS (Surge 5) & APK GTPS
-VHOST_ANDROID_URL=https://magicalps.vercel.app/host/54.90.55.131
-VHOST_IOS_URL=https://magicalps.vercel.app/ios/54.90.55.131
+VHOST_ANDROID_URL=https://magicalps.vercel.app/host/168.144.136.157
+VHOST_IOS_URL=https://magicalps.vercel.app/ios/168.144.136.157
 APK_URL=https://www.mediafire.com/file/3t16viuv6konhwd/magical+5.48.apk/file
-HOST_TXT_CONTENT=54.90.55.131 www.growtopia1.com\n54.90.55.131 www.growtopia2.com\n# Magical ~ delivered by nopy
+HOST_TXT_CONTENT=168.144.136.157 www.growtopia1.com\n168.144.136.157 www.growtopia2.com\n# Magical ~ delivered by gtpshost.com
 
 # Kontak & Komunitas
 WHATSAPP_NUMBER=
